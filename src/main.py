@@ -31,7 +31,15 @@ def send_notification(token, chat_id, message):
     bot.sendMessage(chat_id, text=message)
 
 def parse_page(url):
-    
+    """Will parse the listings on a Kijiji search page.
+
+    Args:
+        url (str): Full URL of search.
+
+    Returns:
+        list: List of dictionaries containing information about each listing.
+    """
+
     page = requests.get(url)
     soup = BeautifulSoup(page.text, 'html.parser')
 
@@ -72,7 +80,15 @@ def parse_page(url):
 
 
 def start_price_check_loop(url, token, chat_id, max_price):
-    
+    """Run price checker.
+
+    Args:
+        url (str): Full URL of search.
+        token (str): Telegram token.
+        chat_id (str): Telegram chat ID.
+        max_price (str): Max price to compare against.
+    """
+
     known_listing_list = []
     first_run = True # To avoid all the inital listings that match price req
 
@@ -146,6 +162,7 @@ def main():
         kijiji_url = args.url
         telegram_token = args.token
         telegram_chat_id = args.chatid
+        max_price = args.max
 
     elif len(sys.argv) == 1:
         # No paramters passed, parse env vars
@@ -162,9 +179,8 @@ def main():
         elif telegram_chat_id == None:
             print_error_and_exit("Telegram Chat ID environment variable not set.")
 
-    start_price_check_loop(kijiji_url, telegram_token, telegram_chat_id, 200)
+    start_price_check_loop(kijiji_url, telegram_token, telegram_chat_id, max_price)
     
-
 
 if __name__ == "__main__":
     main()
