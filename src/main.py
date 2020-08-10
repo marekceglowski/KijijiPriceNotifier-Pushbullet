@@ -86,7 +86,7 @@ def start_price_check_loop(url, token, chat_id, max_price):
         url (str): Full URL of search.
         token (str): Telegram token.
         chat_id (str): Telegram chat ID.
-        max_price (str): Max price to compare against.
+        max_price (float): Max price to compare against.
     """
 
     known_listing_list = []
@@ -179,7 +179,7 @@ def main():
         elif telegram_chat_id == None:
             print_error_and_exit("Telegram Chat ID environment variable not set.")
 
-    start_price_check_loop(kijiji_url, telegram_token, telegram_chat_id, max_price)
+    start_price_check_loop(kijiji_url, telegram_token, telegram_chat_id, float(max_price))
     
 
 if __name__ == "__main__":
