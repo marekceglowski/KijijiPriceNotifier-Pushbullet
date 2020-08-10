@@ -15,7 +15,7 @@ The fastest way to get up and running is to use Docker.
 Run the following command, replacing the search term, Telegram token, Telegram chat ID, and maximum price with your own values.
 
 ```shell
-docker run -d --name kijiji_test -e SEARCH_URL='https://www.kijiji.ca/b-phone-tablet/ontario/phone/k0c132l9004?ad=offering' -e TELEGRAM_TOKEN='110201543:AAHdqTcvCH1vGWJxfSeofSAs0K5PALDsaw' -e TELEGRAM_CHAT_ID='-348786334' -e MAX_PRICE='100' kijiji
+docker run -d --name kijijinotifier -e SEARCH_URL='https://www.kijiji.ca/b-phone-tablet/ontario/phone/k0c132l9004?ad=offering' -e TELEGRAM_TOKEN='110201543:AAHdqTcvCH1vGWJxfSeofSAs0K5PALDsaw' -e TELEGRAM_CHAT_ID='-348786334' -e MAX_PRICE='100' iamaleks/kijijipricenotifier:latest
 ```
 
 ### Create Telegram Bot
