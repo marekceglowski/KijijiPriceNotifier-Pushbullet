@@ -3,10 +3,10 @@
 import os
 import argparse
 import sys
-import telegram # pip3 install python-telegram-bot
 import requests
 from bs4 import BeautifulSoup
 import time
+import json
 
 def print_error_and_exit(error_message):
     """Print error message and exit program.
@@ -17,18 +17,24 @@ def print_error_and_exit(error_message):
     print("Error: " + error_message)
     sys.exit()
 
-
-def send_notification(token, chat_id, message):
-    """Send message to Telegram group.
-
-    Args:
-        token (str): Telegram token.
-        chat_id (str): Telegram chat ID.
-        message (str): Message to send.
-    """
-
-    bot = telegram.Bot(token)
-    bot.sendMessage(chat_id, text=message)
+# Send the push/message to all devices connected to Pushbullet
+def send_message(token, title, body, link):
+    
+    headers = {'Access-Token': token, 'Content-Type': 'application/json'}
+    message = {'type': 'link', 'title': title, 'body': body, 'url': link}
+    message = json.dumps(message)
+    
+    try:
+        req = requests.post(url='https://api.pushbullet.com/v2/pushes', data=message, headers=headers, timeout=20)
+    except requests.exceptions.Timeout:
+        print('Request Timeout')
+        pass
+    except requests.exceptions.TooManyRedirects:
+        print('Too many requests')
+        pass
+    except requests.exceptions.RequestException as e:
+        print(e)
+        pass
 
 def parse_page(url):
     """Will parse the listings on a Kijiji search page.
@@ -79,13 +85,12 @@ def parse_page(url):
     return listings
 
 
-def start_price_check_loop(url, token, chat_id, max_price):
+def start_price_check_loop(url, token, max_price):
     """Run price checker.
 
     Args:
         url (str): Full URL of search.
-        token (str): Telegram token.
-        chat_id (str): Telegram chat ID.
+        token (str): Pushbullet token.
         max_price (float): Max price to compare against.
     """
 
@@ -95,8 +100,7 @@ def start_price_check_loop(url, token, chat_id, max_price):
     while True:
 
         if first_run:
-            send_notification(token, chat_id, "Started watching for search {}".format(url))
-
+            send_message(token, "Kijiji Price Alert", "Started watching for search {}".format(url), url)
 
         try:
             print("Scanning page")
@@ -135,7 +139,7 @@ def start_price_check_loop(url, token, chat_id, max_price):
                 elif float(listing['price']) <= max_price: # Convert price to float since it is not a string
                     message = "Kijiji Listing Alert: {} listed at price {} ({})".format(listing['title'], listing['price'], "https://www.kijiji.ca" + listing['link'])
                     print(message) # UnicodeEncodeError
-                    send_notification(token, chat_id, message)
+                    send_message(token, "Kijiji Price Alert", message, "https://www.kijiji.ca" + listing['link'])
             except ValueError:
                 print("{} is not a valid float".format(listing['price']))
                 continue
@@ -153,33 +157,28 @@ def main():
 
         parser = argparse.ArgumentParser(description='Get low prices on Kijiji')
         parser.add_argument('-u', '--url', help="Kijiji Search URL.", required=True)
-        parser.add_argument('-t', '--token', help="Telegram token.", required=True)
-        parser.add_argument('-c', '--chatid', help="Telegram chat ID.", required=True)
+        parser.add_argument('-t', '--token', help="Pushbullet token.", required=True)
         parser.add_argument('-m', '--max', help="Max price.", required=True)
 
         args = parser.parse_args()
 
         kijiji_url = args.url
-        telegram_token = args.token
-        telegram_chat_id = args.chatid
+        pushbullet_token = args.token
         max_price = args.max
 
     elif len(sys.argv) == 1:
         # No paramters passed, parse env vars
 
         kijiji_url = os.getenv('SEARCH_URL')
-        telegram_token = os.getenv('TELEGRAM_TOKEN')
-        telegram_chat_id = os.getenv('TELEGRAM_CHAT_ID')
+        pushbullet_token = os.getenv('PUSHBULLET_TOKEN')
         max_price = os.getenv('MAX_PRICE')
 
         if kijiji_url == None:
             print_error_and_exit("Kijiji URL environment variable not set.")
-        elif telegram_token == None:
+        elif pushbullet_token == None:
             print_error_and_exit("Telegram Token environment variable not set.")
-        elif telegram_chat_id == None:
-            print_error_and_exit("Telegram Chat ID environment variable not set.")
 
-    start_price_check_loop(kijiji_url, telegram_token, telegram_chat_id, float(max_price))
+    start_price_check_loop(kijiji_url, pushbullet_token, float(max_price))
     
 
 if __name__ == "__main__":
