@@ -4,23 +4,21 @@ Small application to receive notifications on low prices from Kijiji.
 
 When running it you must specify a search term for Kijiji and a maximum price. The application will then watch for new listings that are less than the price specfied.
 
-You will receive notifications on Pushbullet.
+You will receive notifications on Pushbullet. The original application this was forked from used Telegram.
 
 ## How to use
 
 ### Parameters
 
 - **--url/SEARCH_URL**: The search of Kijiji to scrape.
-- **--token/PUSHBULLET_TOKEN**: Telegram bot token.
+- **--token/PUSHBULLET_TOKEN**: Pushbullet token.
 - **--max/MAX_PRICE**: Maximum price to look at.
 
 (Note: --url is a script argument, and SEARCH_URL is an environment variable).
 
 ### Docker 
 
-The fastest way to get up and running is to use Docker.
-
-Run the following command, replacing the search term, Telegram token, Telegram chat ID, and maximum price with your own values.
+Run the following command, replacing the search term, Pushbullet token, and maximum price with your own values.
 
 ```shell
 docker run -d --name kijijinotifier -e SEARCH_URL='https://www.kijiji.ca/b-phone-tablet/ontario/phone/k0c132l9004?ad=offering' -e PUSHBULLET_TOKEN='AAHdqTcvCH1vGWJxfSeofSAs0K5PALDsaw' -e MAX_PRICE='100' marekceglowski/KijijiPriceNotifier-Pushbullet:latest
@@ -28,7 +26,7 @@ docker run -d --name kijijinotifier -e SEARCH_URL='https://www.kijiji.ca/b-phone
 
 ### Run Directly
 
-Make sure you have Python 3 installed on your system and all the PIP packages that are required (pip install -r requirements.txt).
+Make sure you have Python 3 installed on your system and all the PIP packages that are required (`pip install -r requirements.txt`).
 
 ```shell
 ./main.py --url https://www.kijiji.ca/b-phone-tablet/ontario/phone/k0c132l9004?ad=offering --token AAHdqTcvCH1vGWJxfSeofSAs0K5PALDsaw --max 100
