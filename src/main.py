@@ -147,7 +147,7 @@ def start_price_check_loop(url, token, max_price):
 
         print("Sleeping before scanning")
         first_run = False
-        time.sleep(500)
+        time.sleep(60)
 
 
 def main():
