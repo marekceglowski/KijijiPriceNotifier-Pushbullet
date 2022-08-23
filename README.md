@@ -16,9 +16,20 @@ You will receive notifications on Pushbullet. The original application this was 
 
 (Note: --url is a script argument, and SEARCH_URL is an environment variable).
 
+### Script
+
+A script is included that helps you run multiple instances easily in the background. It also lets you see what instances are running and lets you stop them.
+
+Usage:
+```shell
+sh notify.sh add [tag] [url] [token] [price] 
+sh notify.sh remove <tag> 
+sh notify.sh list
+```
+
 ### Docker 
 
-Run the following command, replacing the search term, Pushbullet token, and maximum price with your own values.
+Run the following command, replacing the search term, Pushbullet token, Pushbullet chat ID, and maximum price with your own values.
 
 ```shell
 docker run -d --name kijijinotifier -e SEARCH_URL='https://www.kijiji.ca/b-phone-tablet/ontario/phone/k0c132l9004?ad=offering' -e PUSHBULLET_TOKEN='AAHdqTcvCH1vGWJxfSeofSAs0K5PALDsaw' -e MAX_PRICE='100' marekceglowski/KijijiPriceNotifier-Pushbullet:latest

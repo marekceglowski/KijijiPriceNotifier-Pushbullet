@@ -103,9 +103,9 @@ def start_price_check_loop(url, token, max_price):
             send_message(token, "Kijiji Price Alert", "Started watching for search {}".format(url), url)
 
         try:
-            print("Scanning page")
+            #print("Scanning page")
             current_listings = parse_page(url)
-            print("Done scanning page")
+            #print("Done scanning page")
         except requests.exceptions.ConnectionError:
             print("Scanning page failed")
             continue
@@ -145,7 +145,7 @@ def start_price_check_loop(url, token, max_price):
                 continue
 
 
-        print("Sleeping before scanning")
+        #print("Sleeping before scanning")
         first_run = False
         time.sleep(60)
 
