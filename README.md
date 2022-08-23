@@ -18,7 +18,7 @@ You will receive notifications on Pushbullet. The original application this was 
 
 ### Script
 
-A script is included that helps you run multiple instances easily in the background. It also lets you see what instances are running and lets you stop them.
+A script is included that helps you run multiple instances easily in the background. It also lets you see what instances are running and lets you stop them. Note the the script requires the `nohup` command (often pre-installed on linux systems).
 
 Usage:
 ```shell
